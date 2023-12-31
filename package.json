@@ -7,6 +7,7 @@
     "lint": "xo --fix",
     "build": "rimraf dist && tsup"
   },
+  "types": "dist/index.d.ts",
   "type": "module",
   "keywords": [
     "vervalpd",
@@ -39,5 +40,11 @@
   },
   "repository": {
     "url": "https://github.com/smantriplw/vervalpd-node"
-  }
+  },
+  "files": [
+    "dist/**/*",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ]
 }
