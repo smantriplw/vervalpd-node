@@ -1,5 +1,5 @@
 import {CookieJar} from 'tough-cookie';
-import got, {type Got} from 'got';
+import got, {type OptionsInit, type Got} from 'got';
 import {type VervalFetchedData, type Credentials, type VervalConfig, type StudentTypes} from './@typings/index.js';
 import {loginMethod} from './methods/login.js';
 import {VervalRoutes} from './routers.js';
@@ -23,6 +23,9 @@ export class VervalPd {
     }
 
     this.http = got.extend({
+      retry: {
+        limit: 4,
+      },
       prefixUrl: options.baseUrl ?? 'https://vervalpd.data.kemdikbud.go.id/',
       headers: {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36',
@@ -32,8 +35,23 @@ export class VervalPd {
         afterResponse: [
           async (response, retry) => {
             if (response.statusCode === 200 && response.headers.refresh) {
-              const isLoginMatch = /login/gi.test(response.headers.refresh.toString());
+              const isLoginMatch = /clogin/gi.test(response.headers.refresh.toString());
               if (isLoginMatch) {
+                if (!response.request.options.cookieJar) {
+                  await this.initCookieJar();
+
+                  // Test it again
+                  const testResponse = await this.findSekolahId();
+                  if (!testResponse?.length) {
+                    await this.login();
+                    await this.saveCookieJar();
+                  }
+
+                  return retry({
+                    cookieJar: this.http.defaults.options.cookieJar,
+                  });
+                }
+
                 // Refresh the cookie
                 await this.login();
                 await this.saveCookieJar();
@@ -59,18 +77,25 @@ export class VervalPd {
     return this.options;
   }
 
-  async initCookieJar(): Promise<void> {
-    if (this.options.cookieInstance && !this.http.defaults.options.cookieJar) {
+  async initCookieJar(options?: OptionsInit): Promise<void> {
+    if (this.options.cookieInstance && !(options ?? this.http.defaults.options).cookieJar) {
       const cookie = await this.options.cookieInstance.load<CookieJar>();
 
-      this.http = got.extend(this.http, {
-        cookieJar: cookie,
-      });
+      if (options) {
+        options.cookieJar = cookie;
+      } else {
+        this.http = got.extend(this.http, {
+          cookieJar: cookie,
+        });
+      }
     }
   }
 
   async findSekolahId(): Promise<string | undefined> {
-    await this.initCookieJar();
+    if (this.fetchedData.sekolahId.length > 0) {
+      return this.fetchedData.sekolahId;
+    }
+
     const response = await this.http.get(VervalRoutes.DataSiswa);
 
     return findSekolahIdMethod(this, response);
@@ -93,7 +118,6 @@ export class VervalPd {
   }
 
   async login(): Promise<void> {
-    await this.initCookieJar();
     let response = await this.http.get('./', {
       followRedirect: true,
       responseType: 'text',

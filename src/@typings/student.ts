@@ -27,15 +27,20 @@ export type StudentExtra = Student & {
   transportation: string;
 };
 
+export type ResiduRow = {
+  similarity: number;
+  text: string;
+};
+
 export type Residu = Pick<Student, 'nik' | 'nisn' | 'name' | 'id'> & {
   nisnResidu?: string;
-  rombelResidu?: string;
-  motherResidu?: string;
-  bornDateResidu?: string;
-  bornPlaceResidu?: string;
-  nikResidu?: string;
-  nameResidu?: string;
-  genderResidu?: string;
-  villageResidu?: string;
+  rombelResidu?: ResiduRow;
+  motherResidu?: ResiduRow;
+  bornDateResidu?: ResiduRow;
+  bornPlaceResidu?: ResiduRow;
+  nikResidu?: ResiduRow;
+  nameResidu?: ResiduRow;
+  genderResidu?: ResiduRow;
+  villageResidu?: ResiduRow;
 };
 

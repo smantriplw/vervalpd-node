@@ -11,11 +11,14 @@ export const findResiduMethod: MethodScraper<StudentTypes.Residu[], {
     searchParams: new URLSearchParams({
       search: args?.search ?? '',
       limit: args?.limit?.toString() ?? '',
-      offset: args?.offset?.toString() ?? '',
+      offset: args?.offset?.toString() ?? '0',
       sort: '',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       sekolah_id: app.fetchedData.sekolahId.length > 0 ? app.fetchedData.sekolahId : '',
     }),
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+    },
   }).json<{
     rows: Array<{
       nama: string;
@@ -36,16 +39,20 @@ export const findResiduMethod: MethodScraper<StudentTypes.Residu[], {
     }>;
   }>();
 
-  const resolveQcMessage = (value: string) => htmlParser.parse(value, {
-    comment: false,
-    parseNoneClosedTags: false,
-    lowerCaseTagName: false,
-  }).querySelector('a')?.getAttribute('title')?.trim();
+  const resolveQcMessage = (value: string): StudentTypes.ResiduRow => {
+    const text = htmlParser.parse(value, {
+      comment: false,
+      parseNoneClosedTags: false,
+      lowerCaseTagName: false,
+    }).querySelector('a')?.getAttribute('title')?.trim().replaceAll('\'', '') ?? '-';
 
-  return response.rows.map(row => ({
+    return {text, similarity: Number.parseInt(text?.match(/\d+/g)?.at(0) ?? '0', 10)};
+  };
+
+  return response.rows?.map(row => ({
     name: row.nama,
-    nik: row.nik,
-    nisn: row.nisn,
+    nik: row.nik.replaceAll('\'', ''),
+    nisn: row.nisn.replaceAll('\'', ''),
     bornDateResidu: resolveQcMessage(row.qc_4),
     bornPlaceResidu: resolveQcMessage(row.qc_5),
     nameResidu: resolveQcMessage(row.qc_3),
