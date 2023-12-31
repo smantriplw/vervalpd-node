@@ -27,6 +27,26 @@ export class VervalPd {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36',
         origin: options.baseUrl ?? 'https://vervalpd.data.kemdikbud.go.id/',
       },
+      hooks: {
+        afterResponse: [
+          async (response, retry) => {
+            if (response.statusCode === 200 && response.headers.refresh) {
+              const isLoginMatch = /login/gi.test(response.headers.refresh.toString());
+              if (isLoginMatch) {
+                // Refresh the cookie
+                await this.login();
+                await this.saveCookieJar();
+
+                return retry({
+                  cookieJar: this.http.defaults.options.cookieJar,
+                });
+              }
+            }
+
+            return response;
+          },
+        ],
+      },
     });
   }
 
