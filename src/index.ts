@@ -79,6 +79,10 @@ export class VervalPd {
     return findStudentMethod(this, undefined, {search: query, limit, offset});
   }
 
+  async listStudent(limit = 100, offset = 1): Promise<StudentTypes.Student[]> {
+    return this.findStudent('', limit, offset);
+  }
+
   async login(): Promise<void> {
     await this.initCookieJar();
     let response = await this.http.get('./', {
