@@ -26,3 +26,16 @@ export type StudentExtra = Student & {
   nationality: string;
   transportation: string;
 };
+
+export type Residu = Pick<Student, 'nik' | 'nisn' | 'name' | 'id'> & {
+  nisnResidu?: string;
+  rombelResidu?: string;
+  motherResidu?: string;
+  bornDateResidu?: string;
+  bornPlaceResidu?: string;
+  nikResidu?: string;
+  nameResidu?: string;
+  genderResidu?: string;
+  villageResidu?: string;
+};
+
