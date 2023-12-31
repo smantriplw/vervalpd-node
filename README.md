@@ -12,6 +12,7 @@
 5. `.initCookieJar(): Promise<void>` - internal purpose
 6. `.findResidu(query: string, limit: number, offset?: number): Promise<StudentTypes.Residu[]>`
 7. `.listResidu(limit = 100, offset = 1): Promise<StudentTypes.Residu[]>`
+8. `.getProfile(id: string): Promise<StudentTypes.StudentExtra | undefined>`
 
 ## Usage
 Contoh penggunaan dapat dilihat pada https://github.com/smantriplw/vervalpd-node/tree/main/tests

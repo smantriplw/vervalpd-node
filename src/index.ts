@@ -6,6 +6,7 @@ import {VervalRoutes} from './routers.js';
 import {findSekolahIdMethod} from './methods/find-sekolah-id.js';
 import {findStudentMethod} from './methods/find-student.js';
 import {findResiduMethod} from './methods/find-residu.js';
+import {getProfileMethod} from './methods/get-profile.js';
 
 export class VervalPd {
   public http!: Got;
@@ -115,6 +116,10 @@ export class VervalPd {
 
   async listResidu(limit = 100, offset = 1): Promise<StudentTypes.Residu[]> {
     return this.findResidu('', limit, offset);
+  }
+
+  async getProfile(id: string): Promise<StudentTypes.StudentExtra | undefined> {
+    return getProfileMethod(this, undefined, {id});
   }
 
   async login(): Promise<void> {

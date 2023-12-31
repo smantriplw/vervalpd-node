@@ -14,17 +14,31 @@ export type Student = {
   id: string;
 };
 
+export type VaccineRow = {
+  service: string;
+  date: Date;
+  place: string;
+  type: string;
+  dosed: number;
+};
+
 export type StudentExtra = Student & {
   religion: string;
   phone: string;
   address: string;
   height: number;
-  weight: number;
+  mass: number;
   siblings: number;
   akta: string;
   nipd: string;
   nationality: string;
   transportation: string;
+  schoolInDate?: Date;
+  hobby: string;
+  wishes: string;
+  homeDistance: number;
+  estimatedToSchool: number;
+  vaccines: VaccineRow[];
 };
 
 export type ResiduRow = {
