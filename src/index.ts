@@ -75,8 +75,8 @@ export class VervalPd {
     return findSekolahIdMethod(this, response);
   }
 
-  async findStudent(query: string): Promise<StudentTypes.Student[]> {
-    return findStudentMethod(this, undefined, {search: query});
+  async findStudent(query: string, limit = 100, offset?: number): Promise<StudentTypes.Student[]> {
+    return findStudentMethod(this, undefined, {search: query, limit, offset});
   }
 
   async login(): Promise<void> {

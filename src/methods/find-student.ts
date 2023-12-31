@@ -2,7 +2,7 @@ import {type MethodScraper} from '@/@typings/index.js';
 import {type Student} from '@/@typings/student.js';
 import {VervalRoutes} from '@/routers.js';
 
-export const findStudentMethod: MethodScraper<Student[], {search: string}> = async (app, _, args) => {
+export const findStudentMethod: MethodScraper<Student[], {search: string; limit?: number; offset?: number}> = async (app, _, args) => {
   let sekolahId = app.fetchedData.sekolahId;
   if (sekolahId.length === 0) {
     sekolahId = await app.findSekolahId() ?? '';
@@ -18,8 +18,8 @@ export const findStudentMethod: MethodScraper<Student[], {search: string}> = asy
       search: args!.search,
       sort: '',
       order: '',
-      offset: '',
-      limit: '100', // -1 = unlimited
+      offset: args?.offset?.toString() ?? '',
+      limit: args?.limit?.toString() ?? '100',
     }),
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
