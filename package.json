@@ -1,6 +1,6 @@
 {
   "name": "vervalpd-node",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "VervalPD Kemendikbud scraper service to consume Non-Documented API data",
   "main": "dist/index.js",
   "scripts": {

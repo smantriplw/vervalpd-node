@@ -8,6 +8,7 @@ export const getProfileMethod: MethodScraper<StudentTypes.StudentExtra | undefin
     searchParams: new URLSearchParams({
       id: args!.id,
     }),
+    throwHttpErrors: false,
   });
 
   const dom = htmlParser.parse(response.body, {
