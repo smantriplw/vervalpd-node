@@ -1,6 +1,6 @@
 {
   "name": "vervalpd-node",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "VervalPD Kemendikbud scraper service to consume Non-Documented API data",
   "main": "dist/index.js",
   "scripts": {
@@ -25,8 +25,8 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@swc/core": "^1.3.101",
-    "@types/node": "^20.10.5",
+    "@swc/core": "^1.4.0",
+    "@types/node": "^20.11.16",
     "@types/tough-cookie": "^4.0.5",
     "rimraf": "^5.0.5",
     "tsup": "^8.0.1",
@@ -34,7 +34,7 @@
     "xo": "^0.56.0"
   },
   "dependencies": {
-    "got": "^14.0.0",
+    "got": "^14.2.0",
     "node-html-parser": "^6.1.12",
     "tough-cookie": "^4.1.3"
   },

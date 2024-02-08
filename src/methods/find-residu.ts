@@ -46,7 +46,13 @@ export const findResiduMethod: MethodScraper<StudentTypes.Residu[], {
       lowerCaseTagName: false,
     }).querySelector('a')?.getAttribute('title')?.trim().replaceAll('\'', '') ?? '-';
 
-    return {text, similarity: Number.parseInt(text?.match(/\d+/g)?.at(0) ?? '0', 10)};
+    let similarity = Number.parseInt(text?.match(/\d+/g)?.at(0) ?? '0', 10);
+
+    if (/(unik|nik ditemukan)/gi.test(text)) {
+      similarity = 100;
+    }
+
+    return {text, similarity};
   };
 
   return response.rows?.map(row => ({
@@ -58,6 +64,7 @@ export const findResiduMethod: MethodScraper<StudentTypes.Residu[], {
     nameResidu: resolveQcMessage(row.qc_3),
     nikResidu: resolveQcMessage(row.qc_8),
     rombelResidu: resolveQcMessage(row.qc_1),
+    villageResidu: resolveQcMessage(row.qc_11),
     genderResidu: resolveQcMessage(row.qc_7),
     motherResidu: resolveQcMessage(row.qc_6),
     id: /\?id=(.*)/i.exec(row.peserta_didik_id)?.at(1)?.split(/\s+/g).at(0)?.replace('\'', '') ?? '',
