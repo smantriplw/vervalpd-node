@@ -39,6 +39,9 @@ export const loginMethod: MethodScraper<void, Record<string, unknown>> = async (
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Cookie: response?.headers['set-cookie']?.toString(),
     },
+    https: {
+      rejectUnauthorized: false,
+    },
     throwHttpErrors: false,
     cookieJar: app.http.defaults.options.cookieJar,
   });
