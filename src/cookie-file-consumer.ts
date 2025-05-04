@@ -35,9 +35,9 @@ export class CookieFileConsumer implements CookieInstance {
     let encoded = Buffer.alloc(0);
 
     if (typeof value === 'object') {
-      encoded = gzipSync(JSON.stringify(value));
+      encoded = Buffer.from(gzipSync(JSON.stringify(value)));
     } else if (typeof value === 'string') {
-      encoded = gzipSync(value);
+      encoded = Buffer.from(gzipSync(value));
     }
 
     const results = await fs.promises.writeFile(this.cookieFile, encoded).catch(() => undefined).then(() => 1);

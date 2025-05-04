@@ -15,21 +15,33 @@ export const loginMethod: MethodScraper<void, Record<string, unknown>> = async (
     dom.querySelector('[name="csrf-token"]')?.getAttribute('content'),
   ];
 
-  if (!csrfQuery || !csrfToken) {
-    throw new Error('Missing csrf token');
-  }
+  // if (!csrfQuery || !csrfToken) {
+  //   throw new Error('Missing csrf token');
+  // }
 
-  const postLoginUrl = dom.querySelector('form#w0')?.getAttribute('action');
+  const postLoginUrl = dom.querySelector('.pengguna-form form')?.getAttribute('action');
   if (!postLoginUrl) {
     throw new Error('Missing postLoginUrl');
   }
 
+  const appKey = dom.querySelector('[name="appkey"]')?.getAttribute('value');
+  if (!appKey) {
+    throw new Error('Missing appkey');
+  }
+
   const payload = {
-    [csrfQuery]: csrfToken,
+    ...csrfQuery && csrfToken ? {
+      [csrfQuery]: csrfToken,
+    } : {},
+    // [csrfQuery]: csrfToken,
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    'Pengguna[email]': app.authConfig.email,
+    // 'Pengguna[email]': app.authConfig.email,
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    'Pengguna[password]': app.authConfig.password,
+    // 'Pengguna[password]': app.authConfig.password,
+    'email': app.authConfig.email,
+    'password': app.authConfig.password,
+    'csrf_token': csrfToken,
+    'appkey': appKey,
   };
 
   const responseLogin = await got.post(new URL(postLoginUrl, response?.requestUrl.origin), {
