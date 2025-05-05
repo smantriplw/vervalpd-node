@@ -2,6 +2,28 @@ import htmlParser from 'node-html-parser';
 import {type StudentTypes, type MethodScraper} from '@/@typings/index.js';
 import {VervalRoutes} from '@/routers.js';
 
+const mapLongs = [
+  'KB',
+  'TPA',
+  'SPS',
+  'A',
+  'B',
+  'I',
+  'II',
+  'III',
+  'IV',
+  'V',
+  'VI',
+  'VII',
+  'VIII',
+  'IX',
+  'X',
+  'XI',
+  'XII',
+  'XIII',
+  'PT',
+];
+
 // eslint-disable-next-line complexity
 export const getProfileMethod: MethodScraper<StudentTypes.StudentExtra | undefined, {id: string}> = async (app, _, args) => {
   const response = await app.http.get(VervalRoutes.Profil, {
@@ -21,6 +43,8 @@ export const getProfileMethod: MethodScraper<StudentTypes.StudentExtra | undefin
 
   const attributs = dom.querySelectorAll('#identitas .row div .row li');
   const boxProfiles = dom.querySelectorAll('.box-profile li');
+  const pembelajaran = dom.querySelectorAll('.box-profile p').at(-1)?.text.split('\n').map(n => n.trim().split(':').at(1)).filter(n => n?.length);
+  const longitudinal = dom.querySelectorAll('#longitudinal_v2 table tbody tr');
 
   return {
     name: dom.querySelector('.profile-username')?.text.trim() ?? '',
@@ -41,7 +65,7 @@ export const getProfileMethod: MethodScraper<StudentTypes.StudentExtra | undefin
     nipd: attributs?.at(12)?.text.split(':')[1].trim() ?? '-',
     height: Number.parseInt(attributs?.at(31)?.text.match(/\d+/g)?.[0].trim() ?? '0', 10),
     mass: Number.parseInt(attributs?.at(32)?.text.match(/\d+/g)?.[0].trim() ?? '0', 10),
-    grade: dom.querySelectorAll('.box-profile p').at(2)?.text?.trim().split('\n')[1].split(':').at(1)?.trim() ?? '',
+    grade: pembelajaran?.at(0) ?? '',
     address: dom.querySelector('.box-profile')?.nextElementSibling?.nextElementSibling?.text.trim().replaceAll(/(\t|\r)/g, '') ?? '',
     siblings: Number.parseInt(attributs?.at(35)?.text.split(':')[1].trim() ?? '1', 10),
     schoolInDate: new Date(attributs?.at(13)?.text.split(':')[1].trim() ?? '-'),
@@ -56,5 +80,15 @@ export const getProfileMethod: MethodScraper<StudentTypes.StudentExtra | undefin
       type: row.childNodes.at(7)?.text.trim() ?? '-',
       dosed: Number.parseInt(row.childNodes.at(9)?.text.trim() ?? '-', 10),
     })),
+    longitudinals: longitudinal.map(lng => {
+      const nodes = lng.children.slice(2);
+      const levelIndex = nodes.findIndex(n => n.children.length);
+      return {
+        semester: lng.children[0].text.trim(),
+        school: lng.children[1].text.trim(),
+        level: levelIndex >= 0 ? mapLongs.at(levelIndex) as StudentTypes.SchoolLongitudinal['level'] : '-',
+        lastUpdated: lng.children.at(-1)?.text.trim() ?? new Date().toISOString(),
+      };
+    }),
   };
 };

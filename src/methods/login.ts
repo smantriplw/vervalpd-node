@@ -15,7 +15,7 @@ export const loginMethod: MethodScraper<void, Record<string, unknown>> = async (
     dom.querySelector('[name="csrf-token"]')?.getAttribute('content'),
   ];
 
-  // if (!csrfQuery || !csrfToken) {
+  // If (!csrfQuery || !csrfToken) {
   //   throw new Error('Missing csrf token');
   // }
 
@@ -34,14 +34,14 @@ export const loginMethod: MethodScraper<void, Record<string, unknown>> = async (
       [csrfQuery]: csrfToken,
     } : {},
     // [csrfQuery]: csrfToken,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
     // 'Pengguna[email]': app.authConfig.email,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
     // 'Pengguna[password]': app.authConfig.password,
-    'email': app.authConfig.email,
-    'password': app.authConfig.password,
-    'csrf_token': csrfToken,
-    'appkey': appKey,
+    email: app.authConfig.email,
+    password: app.authConfig.password,
+    csrf_token: csrfToken,
+    appkey: appKey,
   };
 
   const responseLogin = await got.post(new URL(postLoginUrl, response?.requestUrl.origin), {

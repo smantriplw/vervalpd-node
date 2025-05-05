@@ -22,6 +22,13 @@ export type VaccineRow = {
   dosed: number;
 };
 
+export type SchoolLongitudinal = {
+  semester: string;
+  school: string;
+  level: 'KB' | 'TPA' | 'SPS' | 'A' | 'B' | 'I' | 'II' | 'III' | 'IV' | 'V' | 'VI' | 'VII' | 'VIII' | 'IX' | 'X' | 'XI' | 'XII' | 'XIII' | 'PT' | '-';
+  lastUpdated: string;
+};
+
 export type StudentExtra = Student & {
   religion: string;
   phone: string;
@@ -39,6 +46,7 @@ export type StudentExtra = Student & {
   homeDistance: number;
   estimatedToSchool: number;
   vaccines: VaccineRow[];
+  longitudinals: SchoolLongitudinal[];
 };
 
 export type ResiduRow = {
